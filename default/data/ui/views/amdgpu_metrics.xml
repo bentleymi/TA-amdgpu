@@ -1,0 +1,54 @@
+<dashboard version="1.1" theme="light">
+  <label>TA-amdgpu Metrics</label>
+  <description>Index-time metrics over index=metrics (sourcetype=amdgpu:metrics)</description>
+  <row>
+    <panel>
+      <title>All amdgpu.* series</title>
+      <chart>
+        <search>
+          <query>| mstats avg("amdgpu.*") as "v*" where index=metrics by metric_name span=5m
+| 1=1
+| foreach v* [eval Value=coalesce(Value,&lt;&lt;FIELD&gt;&gt;)]
+| fields - v*
+| xyseries _time metric_name Value</query>
+          <done/>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+      <panel>
+      <title>VRAM used/total (MiB)</title>
+      <chart>
+        <search>
+          <query>| mstats avg("amdgpu.*") as "v*" where index=metrics by metric_name span=5m
+| search metric_name IN ("*vram_used*","*vram_total*")
+| foreach v* [eval Value=coalesce(Value,&lt;&lt;FIELD&gt;&gt;)]
+| fields - v*
+| xyseries _time metric_name Value</query>
+          <done/>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+      <panel>
+      <title>GPU busy % / temperature</title>
+      <chart>
+        <search>
+          <query>| mstats avg("amdgpu.*") as "v*" where index=metrics by metric_name span=5m
+| search metric_name IN ("*busy_pct*","*temperature*")
+| foreach v* [eval Value=coalesce(Value,&lt;&lt;FIELD&gt;&gt;)]
+| fields - v*
+| xyseries _time metric_name Value</query>
+          <done/>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+  </row>
+</dashboard>
