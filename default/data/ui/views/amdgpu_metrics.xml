@@ -1,51 +1,77 @@
 <dashboard version="1.1" theme="light">
   <label>TA-amdgpu Metrics</label>
-  <description>Index-time metrics over index=metrics (sourcetype=amdgpu:metrics)</description>
+  <description> Index-time metrics over index=metrics (sourcetype amdgpu:metrics); series prefixed 'amdgpu.'.</description>
   <row>
     <panel>
-      <title>All amdgpu.* series</title>
+      <title>All amdgpu.* series (counts + per-card state)</title>
       <chart>
         <search>
           <query>| mstats avg("amdgpu.*") as "v*" where index=metrics by metric_name span=5m
-| foreach v* [eval Value=coalesce(Value,&lt;&lt;FIELD&gt;&gt;)]
-| fields - v*
-| xyseries _time metric_name Value</query>
+| rename v* as "amdgpu.*"</query>
           <done/>
         </search>
         <option name="charting.chart">line</option>
-        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.nullValueRendering">connect</option>
         <option name="charting.drilldown">none</option>
       </chart>
     </panel>
-      <panel>
-      <title>VRAM used/total (MiB)</title>
+  </row>
+  <row>
+    <panel>
+      <title>GPU utilization (%) per card</title>
       <chart>
         <search>
-          <query>| mstats avg("amdgpu.*") as "v*" where index=metrics by metric_name span=5m
-| search metric_name IN ("*vram_used*","*vram_total*")
-| foreach v* [eval Value=coalesce(Value,&lt;&lt;FIELD&gt;&gt;)]
-| fields - v*
-| xyseries _time metric_name Value</query>
+          <query>| mstats avg("amdgpu.*busy_pct") as "v*" where index=metrics by metric_name span=5m
+| rename v* as "amdgpu.*busy_pct"</query>
           <done/>
         </search>
         <option name="charting.chart">line</option>
-        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.nullValueRendering">connect</option>
         <option name="charting.drilldown">none</option>
       </chart>
     </panel>
-      <panel>
-      <title>GPU busy % / temperature</title>
+  </row>
+  <row>
+    <panel>
+      <title>Temperature (C) per card</title>
       <chart>
         <search>
-          <query>| mstats avg("amdgpu.*") as "v*" where index=metrics by metric_name span=5m
-| search metric_name IN ("*busy_pct*","*temperature*")
-| foreach v* [eval Value=coalesce(Value,&lt;&lt;FIELD&gt;&gt;)]
-| fields - v*
-| xyseries _time metric_name Value</query>
+          <query>| mstats avg("amdgpu.*temperature_c") as "v*" where index=metrics by metric_name span=5m
+| rename v* as "amdgpu.*temperature_c"</query>
           <done/>
         </search>
         <option name="charting.chart">line</option>
-        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.nullValueRendering">connect</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>VRAM used (MiB) per card</title>
+      <chart>
+        <search>
+          <query>| mstats avg("amdgpu.*vram_used_mib") as "v*" where index=metrics by metric_name span=5m
+| rename v* as "amdgpu.*vram_used_mib"</query>
+          <done/>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueRendering">connect</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>VRAM total (MiB) per card</title>
+      <chart>
+        <search>
+          <query>| mstats avg("amdgpu.*vram_total_mib") as "v*" where index=metrics by metric_name span=5m
+| rename v* as "amdgpu.*vram_total_mib"</query>
+          <done/>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueRendering">connect</option>
         <option name="charting.drilldown">none</option>
       </chart>
     </panel>
