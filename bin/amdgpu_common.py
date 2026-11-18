@@ -27,12 +27,24 @@ def _int(x):
 
 
 def _hwmon_dir(card_dir, card_name):
-    cand = os.path.join(card_dir, "hwmon")
-    if os.path.isdir(cand):
-        return cand
-    cand = os.path.join(card_dir, card_name, "hwmon")
-    if os.path.isdir(cand):
-        return cand
+    for cand in (
+        os.path.join(card_dir, "device", "hwmon"),
+        os.path.join(card_dir, "hwmon"),
+        os.path.join(card_dir, card_name, "hwmon"),
+    ):
+        if not os.path.isdir(cand):
+            continue
+        try:
+            subs = sorted(os.listdir(cand))
+        except OSError:
+            subs = []
+        for sub in subs:
+            if sub.startswith("hwmon"):
+                sub_dir = os.path.join(cand, sub)
+                if os.path.isfile(os.path.join(sub_dir, "temp1_input")):
+                    return sub_dir
+        if os.path.isfile(os.path.join(cand, "temp1_input")):
+            return cand
     return None
 
 

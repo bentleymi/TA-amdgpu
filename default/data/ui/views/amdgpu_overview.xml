@@ -3,7 +3,7 @@
   <description>Collects AMD GPU telemetry from /sys/class/drm/cardN/device (VRAM used/total, busy %, temperature via associated hwmon) and /sys/class/kfd (GPU count, memory info) when AMD GPUs</description>
   <row>
     <panel>
-      <title>AMD GPUs (per host, latest)</title>
+      <title>AMD GPUs (fleet, latest)</title>
       <single>
         <search>
           <query>| mstats avg("amdgpu.gpu_count") as value where index=metrics span=5m
@@ -13,7 +13,7 @@
       </single>
     </panel>
     <panel>
-      <title>amdkfd bound (per host, latest)</title>
+      <title>amdkfd bound (fleet, latest)</title>
       <single>
         <search>
           <query>| mstats avg("amdgpu.kfd") as value where index=metrics span=5m
@@ -43,7 +43,7 @@
           <query>index=main sourcetype="amdgpu:status"
 | eventstats latest(_time) as lt by host
 | dedup host lt
-| rex field=_raw max_match=0 "\"temperature_c\":\s*(?&lt;t&gt;[0-9]+)"
+| rex field=_raw max_match=0 "\"temperature_c\":\s*(?&lt;t&gt;[0-9.]+)"
 | mvexpand t
 | stats max(t) as value</query>
           <done/>
