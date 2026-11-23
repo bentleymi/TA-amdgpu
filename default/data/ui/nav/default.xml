@@ -3,5 +3,6 @@
     <view name="amdgpu_overview" />
     <view name="amdgpu_metrics" />
     <search label="TA-amdgpu Events" search="search index=main sourcetype=amdgpu:status" />
+    <view name="license" />
   </nav>
 </application>
