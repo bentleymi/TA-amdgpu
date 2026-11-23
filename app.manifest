@@ -7,12 +7,20 @@
       "name": "TA-amdgpu",
       "version": "1.0.2"
     },
-    "author": [{"name":"Michael \"JKat54\" Bentley","email":"michael@bentleypc.com","company":"BentleyPC LLC"}],
+    "author": [
+      {
+        "name": "Michael \"JKat54\" Bentley",
+        "email": "michael@bentleypc.com",
+        "company": "BentleyPC LLC"
+      }
+    ],
     "releaseDate": "11/16/2026",
     "description": "Collects AMD GPU telemetry from /sys/class/drm/cardN/device (VRAM used/total, busy %, temperature via associated hwmon) and /sys/class/kfd (GPU count, memory info) when AMD GPUs are present. Emits JSON events to index=main (sourcetype amdgpu:status) and amdgpu.* metrics to index=metrics (sourcetype amdgpu:metrics); hosts without AMD GPUs report 'absent'.",
     "classification": {
       "intendedAudience": "IT",
-      "categories": ["IT Operations"],
+      "categories": [
+        "IT Operations"
+      ],
       "developmentStatus": "Production/Latest"
     },
     "commonInformationModels": null,
@@ -41,5 +49,9 @@
     "_standalone",
     "_distributed"
   ],
-  "targetWorkloads": ["_search_heads", "_indexers"]
+  "targetWorkloads": [
+    "_search_heads",
+    "_indexers"
+  ],
+  "version": "1.0.8"
 }
